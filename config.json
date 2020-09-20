@@ -1,0 +1,9 @@
+{
+    "weights_folder": "weights",
+    "detection_confidence": 0.5,
+    "blur_strength": 99,
+    "display_live": false,
+    "write_video": true,
+    "input": "input/test_video.mp4",
+    "output": "output/processed.mp4"
+}
