@@ -1,8 +1,17 @@
+__author__ = "Animikh Aich"
+__copyright__ = "Copyright 2020, Animikh Aich"
+__credits__ = ["Animikh Aich"]
+__license__ = "MIT"
+__version__ = "1.0.0"
+__maintainer__ = "Animikh Aich"
+__email__ = "animikhaich@gmail.com"
+
 from misc import CustomVideoWriter, display_frame, blur_frame, calc_fps
 from face_detection import OpenVINOFaceDetector
 from misc import logging, load_config
 from imutils.video import VideoStream
 import cv2, time, os
+import numpy as np
 
 # Configs and Initializations
 config = load_config("config.json")
@@ -10,7 +19,9 @@ video_source = config.get("input", 0)
 face_detector = OpenVINOFaceDetector(config=config)
 
 # Determine Video Input Type
-if "rtsp" in video_source.lower() or "http" in video_source.lower():
+if not isinstance(video_source, int) and (
+    "rtsp" in video_source.lower() or "http" in video_source.lower()
+):
     live_stream = True
 else:
     live_stream = False
@@ -28,6 +39,9 @@ else:
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(cap.get(cv2.CAP_PROP_FPS))
+
+if config.get("stacked_video", False):
+    width = width * 2
 
 # Initialize Video Writer
 if config.get("write_video", False):
@@ -56,6 +70,8 @@ while True:
     elif frame is None and not live_stream:
         break
 
+    original_frame = frame.copy()
+
     try:
         # Run Face Detection
         boxes = face_detector.detect(frame)
@@ -71,13 +87,16 @@ while True:
     # Calculate FPS
     frame, fps = calc_fps(start_time, frame)
 
+    if config.get("stacked_video", False):
+        frame = np.hstack((original_frame, frame))
+
     # Write Frame
     if config.get("write_video", False):
         video_writer.write_frame(frame)
 
     # Display frame
     if config.get("display_live", False):
-        terimate = display_frame(frame)
+        terimate = display_frame(frame, width=1920)
         if terimate:
             break
 
