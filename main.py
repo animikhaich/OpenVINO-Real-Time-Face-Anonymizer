@@ -77,6 +77,7 @@ while True:
         boxes = face_detector.detect(frame)
     except Exception as e:
         logging.error(f"Failed to detect: {e}")
+        boxes = []
 
     # Blur Faces
     for x1, y1, x2, y2 in boxes:
