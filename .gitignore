@@ -131,7 +131,6 @@ dmypy.json
 
 # Ignore test files
 test*
-face_detection/detector.py
 
 .vscode/
 !.vscode/settings.json
