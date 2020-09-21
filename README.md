@@ -9,16 +9,16 @@
 <p align="center">
     <img src="assets/face_ai.png" alt="Logo" width="150" height="150">
 
-  <h2 align="center">Real Time Face Blur Algorithm</h2>
+  <h2 align="center">Real Time Face Anonymizer</h2>
 
   <p align="center">
     Blur Faces in Real-Time while processing on a single CPU. Make your videos GDPR compliant in minutes.
     <br />
-    <a href="https://youtu.be/sTswDfqWowg">View Demo</a>
+    <a href="https://youtu.be/0TuRVxJVuOI">View Demo</a>
     ·
-    <a href="https://github.com/animikhaich/VTU-Result-Downloader/issues/new">Report Bug</a>
+    <a href="https://github.com/animikhaich/Real-Time-Face-Anonymizer/issues/new">Report Bug</a>
     ·
-    <a href="https://github.com/animikhaich/VTU-Result-Downloader/issues/new">Request Feature</a>
+    <a href="https://github.com/animikhaich/Real-Time-Face-Anonymizer/issues/new">Request Feature</a>
   </p>
 </p>
 <p align="center">
@@ -31,12 +31,13 @@
 - [Table of Contents](#table-of-contents)
 - [About The Project](#about-the-project)
 - [Demo](#demo)
+- [Features](#features)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Built With](#built-with)
   - [Minimum Hardware Requirements](#minimum-hardware-requirements)
-  - [Installation](#installation)
-- [Usage](#usage)
+  - [Installation and Inference](#installation-and-inference)
+- [Changelog](#changelog)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
@@ -47,13 +48,28 @@
 
 ## About The Project
 
-A web-scraping program to automatically download VTU University Results for specified USN numbers. This was originally created for the use in Dept. of ECE, RNS Institute of Technology.
+General Data Protection Regulation (GDPR) is a regulation in EU law on data protection and privacy in the European Union and the European Economic Area.
 
-Unfortunately, the VTU results website has been drastically modified, and I do not have time to maintain this project any further. Hence, this project is deprecated and it no longer works. However, for reference in terms of code, it is published and the code is publicly available. Any contributions are welcome.
+One of the key guidelines of the GDPR is to hide/remove any personal identification for any person for videos uploaded online or analyzed by Algorithms.
+
+This program aims to provide an option to Anonymize or Blur faces that are visible in a video with the help of a light-weight model that allows real-time processing on limited hardware like CPUs.
+
+This code has been tried and tested on 10th Gen Intel Core i5 10400 CPU and has been observed to provide up-to 59 FPS.
+
+Face Detection Model used: MobileNetV2 based [OpenVINO face-detection-0104 Model](https://docs.openvinotoolkit.org/latest/omz_models_intel_face_detection_0104_description_face_detection_0104.html)
 
 ## Demo
 
--   [YouTube Video](https://youtu.be/sTswDfqWowg)
+-   [YouTube Video](https://youtu.be/0TuRVxJVuOI)
+
+<!-- FEATURES -->
+
+## Features
+
+-   **Automatic Weights Download** - No need to fuss about where to download weights from. It is integrated and is downloaded automatically if not already present.
+-   **Extensive Logging** - Find out what happened, how it happened, when it happened
+-   **Modular Code** - Feel Free to re-use and modify any part of the code. Each class/Function is created to function as a standalone code.
+-   **Single Point of Control** - No need to search in the code where and how to modify a given parameter. Use the single `config.json` to tune parameters as per your specific need.
 
 <!-- GETTING STARTED -->
 
@@ -63,6 +79,7 @@ At the moment, the GUI Runs but the functional part is broken (since the website
 
 ### Prerequisites
 
+-   [Intel OpenVINO Toolkit](https://docs.openvinotoolkit.org/)
 -   [Python 3](https://www.python.org/)
 -   [Git](https://git-scm.com/)
 
@@ -70,55 +87,55 @@ At the moment, the GUI Runs but the functional part is broken (since the website
 
 I wanted to reduce the file-size for this simple project. Hence, I used Tkinter instead of PyQT5.
 
--   [PyQt5](https://pypi.org/project/PyQt5/)
--   [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
+-   [Intel OpenVINO 2020.3 LTS](https://software.intel.com/content/www/us/en/develop/articles/openvino-2020-3-lts-relnotes.html)
+-   [OpenCV](https://opencv.org/)
+-   [Numpy](https://numpy.org/)
 -   [Requests](https://requests.readthedocs.io/en/master/)
--   [Pandas](https://pandas.pydata.org/)
 
 ### Minimum Hardware Requirements
 
--   CPU: 1 Logical Cores (Threads)
--   RAM: 500 MB
+-   CPU: 6th Generation Intel Core i3 and Above
+-   RAM: 8 GB
 -   Storage: 500 MB (Including Dependencies)
--   OS: Linux, Windows, MacOS
+-   OS: Ubuntu 16.04 LTS or 18.04 LTS (Tested), Windows
 
-### Installation
+For detailed hardware and software support for OpenVINO please visit the [Computer Vision Hardware Page](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/hardware.html).
 
-1. Clone the repo
+### Installation and Inference
+
+1. Install and Set Up Intel OpenVINO by following the [Install Docs](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_linux.html)
+
+2. Clone the repo
 
 ```sh
-git clone https://github.com/animikhaich/VTU-Result-Downloader.git
+git clone https://github.com/animikhaich/Real-Time-Face-Anonymizer.git
 ```
 
-2. Install Python packages
+3. Install Python packages
 
 ```sh
 pip install -r requirements.txt
 ```
 
-1. Run the main file
+4. Change the video source and other settings in the `config.json` file
+
+5. Run the `main.py` file
 
 ```sh
-python GUI.py
+python main.py
 ```
 
-<!-- USAGE EXAMPLES -->
-
-## Usage
-
-There are two buttons and a dropdown selector (Deprecated).
-
--   Select whether you want to fetch results for CBCS or Non-CBCS scheme.
--   Enter the USN Range (Start and end), and select the filename and/or file location.
--   Click on Download.
-
 <!-- CHANGELOG -->
+
+## Changelog
+
+See the [Changelog](CHANGELOG.md).
 
 <!-- ROADMAP -->
 
 ## Roadmap
 
-This project is **No Longer Maintained by me**. Contributions are welcome.
+See the [open issues](https://github.com/animikhaich/Real-Time-Face-Anonymizer/issues?q=is%3Aopen) for a list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
 
@@ -151,16 +168,16 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/animikhaich/VTU-Result-Downloader.svg?style=flat-square
-[contributors-url]: https://github.com/animikhaich/VTU-Result-Downloader/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/animikhaich/VTU-Result-Downloader.svg?style=flat-square
-[forks-url]: https://github.com/animikhaich/VTU-Result-Downloader/network/members
-[stars-shield]: https://img.shields.io/github/stars/animikhaich/VTU-Result-Downloader.svg?style=flat-square
-[stars-url]: https://github.com/animikhaich/VTU-Result-Downloader/stargazers
-[issues-shield]: https://img.shields.io/github/issues/animikhaich/VTU-Result-Downloader.svg?style=flat-square
-[issues-url]: https://github.com/animikhaich/VTU-Result-Downloader/issues
-[license-shield]: https://img.shields.io/github/license/animikhaich/VTU-Result-Downloader.svg?style=flat-square
-[license-url]: https://github.com/animikhaich/VTU-Result-Downloader/blob/master/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/animikhaich/Real-Time-Face-Anonymizer.svg?style=flat-square
+[contributors-url]: https://github.com/animikhaich/Real-Time-Face-Anonymizer/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/animikhaich/Real-Time-Face-Anonymizer.svg?style=flat-square
+[forks-url]: https://github.com/animikhaich/Real-Time-Face-Anonymizer/network/members
+[stars-shield]: https://img.shields.io/github/stars/animikhaich/Real-Time-Face-Anonymizer.svg?style=flat-square
+[stars-url]: https://github.com/animikhaich/Real-Time-Face-Anonymizer/stargazers
+[issues-shield]: https://img.shields.io/github/issues/animikhaich/Real-Time-Face-Anonymizer.svg?style=flat-square
+[issues-url]: https://github.com/animikhaich/Real-Time-Face-Anonymizer/issues
+[license-shield]: https://img.shields.io/github/license/animikhaich/Real-Time-Face-Anonymizer.svg?style=flat-square
+[license-url]: https://github.com/animikhaich/Real-Time-Face-Anonymizer/blob/master/LICENSE.md
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/animikh-aich/
 [product-screenshot]: assets/face-blur-demo.gif
