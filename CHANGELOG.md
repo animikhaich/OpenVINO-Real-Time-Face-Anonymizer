@@ -5,9 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## Version 1.0.1 - 2020-09-27
 
--   Information to be added
+### Added
+
+-   Signature to `detect.py`
+-   Intel Licensing information for `intel_inference.py`
+-   Additional Comment on `main.py`
+
+### Modified
+
+-   Bugfix - Fixed Detector to accept gray scale images in `detect.py`
+-   Changed Default Detector Confidence to 0.75 in `config.json` to avoid false positives
 
 ## Version 1.0.0 - 2020-09-22
 
