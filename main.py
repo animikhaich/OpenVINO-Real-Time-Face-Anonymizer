@@ -88,6 +88,8 @@ while True:
     # Calculate FPS
     frame, fps = calc_fps(start_time, frame)
 
+    # To display and/or write video side by side,
+    # with the original on the left and processed on the right
     if config.get("stacked_video", False):
         frame = np.hstack((original_frame, frame))
 

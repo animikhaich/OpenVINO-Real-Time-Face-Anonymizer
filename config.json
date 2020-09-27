@@ -1,7 +1,7 @@
 {
     "weights_folder": "weights",
     "processing_device": "CPU",
-    "detection_confidence": 0.5,
+    "detection_confidence": 0.75,
     "blur_strength": 99,
     "display_live": true,
     "write_video": true,

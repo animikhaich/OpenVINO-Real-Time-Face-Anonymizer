@@ -1,3 +1,12 @@
+__author__ = "Animikh Aich"
+__copyright__ = "Copyright 2020, Animikh Aich"
+__credits__ = ["Animikh Aich"]
+__license__ = "MIT"
+__version__ = "1.0.1"
+__maintainer__ = "Animikh Aich"
+__email__ = "animikhaich@gmail.com"
+
+
 from .intel_inference import Network
 from misc import logging, download_file
 import numpy as np
@@ -76,7 +85,7 @@ class OpenVINOFaceDetector:
         if channel_mode == "rgb":
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
         elif channel_mode == "gray":
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
 
         # local declarations
         frame_h, frame_w, _ = frame.shape
