@@ -1,11 +1,11 @@
 {
     "weights_folder": "weights",
-    "processing_device": "CPU",
+    "processing_device": "GPU",
     "detection_confidence": 0.75,
     "blur_strength": 99,
     "display_live": true,
     "write_video": true,
     "stacked_video": false,
-    "input": 0,
+    "input": "input.mp4",
     "output": "output/processed.mp4"
 }
