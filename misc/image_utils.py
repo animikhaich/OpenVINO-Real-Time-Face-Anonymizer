@@ -49,7 +49,7 @@ def calc_fps(start_time, frame=None, print_on_console=False):
     if (
         frame is not None
         and isinstance(frame, np.ndarray)
-        and min(frame.shape[:-2]) > 50
+        and min(frame.shape[:-1]) > 50
     ):
         cv2.putText(
             frame, fps_str, (20, 30), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 1

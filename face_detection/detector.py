@@ -88,7 +88,7 @@ class OpenVINOFaceDetector:
             frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
 
         # local declarations
-        frame_h, frame_w, _ = frame.shape
+        frame_h, frame_w = frame.shape[:-1]
         request_id = 0
         boxes = []
 
