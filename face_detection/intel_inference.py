@@ -21,7 +21,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import os
 import sys
 from misc import logging as log
-from openvino.inference_engine import IENetwork, IECore
+from openvino.inference_engine import IECore
 
 
 class Network:
@@ -80,7 +80,7 @@ class Network:
 
         # Read IR
         log.info("Reading IR...")
-        self.net = IENetwork(model=model_xml, weights=model_bin)
+        self.net = self.plugin.read_network(model=model_xml, weights=model_bin)
         log.info("Loading IR to the plugin...")
 
         if device == "CPU":
