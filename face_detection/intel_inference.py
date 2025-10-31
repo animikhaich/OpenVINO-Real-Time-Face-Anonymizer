@@ -21,7 +21,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import os
 import sys
 from misc import logging as log
-from openvino.runtime import Core
+
+try:
+    from openvino import Core
+except ImportError:
+    # Fallback for older OpenVINO versions (2022.1 - 2025.0)
+    from openvino.runtime import Core
 
 
 class Network:
