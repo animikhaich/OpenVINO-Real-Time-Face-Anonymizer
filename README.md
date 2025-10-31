@@ -80,7 +80,7 @@ At the moment, the GUI Runs but the functional part is broken (since the website
 
 ### Prerequisites
 
--   [Intel OpenVINO Toolkit](https://docs.openvinotoolkit.org/)
+-   [Intel OpenVINO Toolkit 2022.1 or later](https://docs.openvino.ai/)
 -   [Python 3](https://www.python.org/)
 -   [Git](https://git-scm.com/)
 
@@ -88,7 +88,7 @@ At the moment, the GUI Runs but the functional part is broken (since the website
 
 I wanted to reduce the file-size for this simple project. Hence, I used Tkinter instead of PyQT5.
 
--   [Intel OpenVINO 2020.3 LTS](https://software.intel.com/content/www/us/en/develop/articles/openvino-2020-3-lts-relnotes.html)
+-   [Intel OpenVINO 2022.1+](https://docs.openvino.ai/)
 -   [OpenCV](https://opencv.org/)
 -   [Numpy](https://numpy.org/)
 -   [Requests](https://requests.readthedocs.io/en/master/)
@@ -104,7 +104,14 @@ For detailed hardware and software support for OpenVINO please visit the [Comput
 
 ### Installation and Inference
 
-1. Install and Set Up Intel OpenVINO by following the [Install Docs](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_linux.html)
+1. Install Intel OpenVINO Toolkit (2022.1 or later)
+
+   You can install OpenVINO using pip:
+   ```sh
+   pip install openvino
+   ```
+   
+   Or follow the [official installation guide](https://docs.openvino.ai/latest/openvino_docs_install_guides_overview.html) for your platform.
 
 2. Clone the repo
 

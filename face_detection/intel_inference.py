@@ -21,7 +21,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import os
 import sys
 from misc import logging as log
-from openvino.inference_engine import IENetwork, IECore
+
+try:
+    # Preferred import path for OpenVINO 2025.0+
+    from openvino import Core
+except ImportError:
+    # Fallback import path for OpenVINO 2022.1 - 2024.x
+    from openvino.runtime import Core
 
 
 class Network:
@@ -31,12 +37,12 @@ class Network:
     """
 
     def __init__(self):
-        self.net = None
-        self.plugin = None
+        self.model = None
+        self.core = None
         self.input_blob = None
         self.out_blob = None
-        self.net_plugin = None
-        self.infer_request_handle = None
+        self.compiled_model = None
+        self.infer_request = None
 
     def load_model(
         self,
@@ -62,67 +68,37 @@ class Network:
 
         model_xml = model
         model_bin = os.path.splitext(model_xml)[0] + ".bin"
-        # Plugin initialization for specified device
-        # and load extensions library if specified
+        
+        # Initialize Core
         if not plugin:
             log.info("Initializing plugin for {} device...".format(device))
-            self.plugin = IECore()
-            # print("========== {} ==========".format(self.plugin.get_config("CPU", "CPU_THREADS_NUM")))
-            # self.plugin.set_config({"CPU_THREADS_NUM": "4"}, "CPU")
-            # print("========== {} ==========".format(self.plugin.get_config("CPU", "CPU_THREADS_NUM")))
-            # print("=="*10)
-            # print("========== {} ==========".format(self.plugin.get_config("CPU", "CPU_BIND_THREAD")))
+            self.core = Core()
         else:
-            self.plugin = plugin
+            self.core = plugin
 
         if cpu_extension and "CPU" in device:
-            self.plugin.add_extension(cpu_extension, "CPU")
+            self.core.add_extension(cpu_extension, "CPU")
 
         # Read IR
         log.info("Reading IR...")
-        self.net = IENetwork(model=model_xml, weights=model_bin)
+        self.model = self.core.read_model(model=model_xml)
         log.info("Loading IR to the plugin...")
 
-        if device == "CPU":
-            supported_layers = self.plugin.query_network(self.net, "CPU")
-            not_supported_layers = [
-                l for l in self.net.layers.keys() if l not in supported_layers
-            ]
-            if len(not_supported_layers) != 0:
-                log.error(
-                    "Following layers are not supported by "
-                    "the plugin for specified device {}:\n {}".format(
-                        device, ", ".join(not_supported_layers)
-                    )
-                )
-                log.error(
-                    "Please try to specify cpu extensions library path"
-                    " in command line parameters using -l "
-                    "or --cpu_extension command line argument"
-                )
-                sys.exit(1)
+        # Compile model for the specified device
+        self.compiled_model = self.core.compile_model(self.model, device)
+        
+        # Get input and output names (store as names for compatibility)
+        self.input_blob = list(self.model.inputs)[0].get_any_name()
+        self.out_blob = list(self.model.outputs)[0].get_any_name()
 
-        if num_requests == 0:
-            # Loads network read from IR to theplugin
-            self.net_plugin = self.plugin.load_network(
-                network=self.net, device_name=device
-            )
-        else:
-            self.net_plugin = self.plugin.load_network(
-                network=self.net, num_requests=num_requests, device_name=device
-            )
-
-        self.input_blob = next(iter(self.net.inputs))
-        self.out_blob = next(iter(self.net.outputs))
-
-        return self.plugin, self.get_input_shape()
+        return self.core, self.get_input_shape()
 
     def get_input_shape(self):
         """
         Gives the shape of the input layer of the network.
         :return: None
         """
-        return self.net.inputs[self.input_blob].shape
+        return self.model.input(self.input_blob).shape
 
     def performance_counter(self, request_id):
         """
@@ -131,8 +107,10 @@ class Network:
         :param request_id: Index of Infer request value. Limited to device capabilities
         :return: Performance of the layer
         """
-        perf_count = self.net_plugin.requests[request_id].get_perf_counts()
-        return perf_count
+        if self.infer_request:
+            perf_count = self.infer_request.get_perf_counts()
+            return perf_count
+        return None
 
     def exec_net(self, request_id, frame):
         """
@@ -141,10 +119,9 @@ class Network:
         :param frame: Input image
         :return: Instance of Executable Network class
         """
-        self.infer_request_handle = self.net_plugin.start_async(
-            request_id=request_id, inputs={self.input_blob: frame}
-        )
-        return self.net_plugin
+        self.infer_request = self.compiled_model.create_infer_request()
+        self.infer_request.start_async(inputs={self.input_blob: frame})
+        return self.compiled_model
 
     def wait(self, request_id):
         """
@@ -152,8 +129,9 @@ class Network:
         :param request_id: Index of Infer request value. Limited to device capabilities.
         :return: Timeout value
         """
-        wait_process = self.net_plugin.requests[request_id].wait(-1)
-        return wait_process
+        if self.infer_request:
+            self.infer_request.wait()
+        return 0
 
     def get_output(self, request_id, output=None):
         """
@@ -162,17 +140,19 @@ class Network:
         :param output: Name of the output layer
         :return: Results for the specified request
         """
-        if output:
-            res = self.infer_request_handle.outputs[output]
-        else:
-            res = self.net_plugin.requests[request_id].outputs[self.out_blob]
-        return res
+        if self.infer_request:
+            if output:
+                res = self.infer_request.get_tensor(output).data
+            else:
+                res = self.infer_request.get_tensor(self.out_blob).data
+            return res
+        return None
 
     def clean(self):
         """
         Deletes all the instances
         :return: None
         """
-        del self.net_plugin
-        del self.plugin
-        del self.net
+        del self.compiled_model
+        del self.core
+        del self.model
