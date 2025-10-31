@@ -23,9 +23,10 @@ import sys
 from misc import logging as log
 
 try:
+    # Preferred import path for OpenVINO 2025.0+
     from openvino import Core
 except ImportError:
-    # Fallback for older OpenVINO versions (2022.1 - 2025.0)
+    # Fallback import path for OpenVINO 2022.1 - 2024.x
     from openvino.runtime import Core
 
 
@@ -86,9 +87,9 @@ class Network:
         # Compile model for the specified device
         self.compiled_model = self.core.compile_model(self.model, device)
         
-        # Get input and output names
-        self.input_blob = list(self.model.inputs)[0]
-        self.out_blob = list(self.model.outputs)[0]
+        # Get input and output names (store as names for compatibility)
+        self.input_blob = list(self.model.inputs)[0].get_any_name()
+        self.out_blob = list(self.model.outputs)[0].get_any_name()
 
         return self.core, self.get_input_shape()
 
@@ -97,7 +98,7 @@ class Network:
         Gives the shape of the input layer of the network.
         :return: None
         """
-        return self.input_blob.shape
+        return self.model.input(self.input_blob).shape
 
     def performance_counter(self, request_id):
         """
@@ -119,7 +120,7 @@ class Network:
         :return: Instance of Executable Network class
         """
         self.infer_request = self.compiled_model.create_infer_request()
-        self.infer_request.start_async(inputs=[frame])
+        self.infer_request.start_async(inputs={self.input_blob: frame})
         return self.compiled_model
 
     def wait(self, request_id):
@@ -141,9 +142,9 @@ class Network:
         """
         if self.infer_request:
             if output:
-                res = self.infer_request.get_output_tensor(output).data
+                res = self.infer_request.get_tensor(output).data
             else:
-                res = self.infer_request.get_output_tensor().data
+                res = self.infer_request.get_tensor(self.out_blob).data
             return res
         return None
 
